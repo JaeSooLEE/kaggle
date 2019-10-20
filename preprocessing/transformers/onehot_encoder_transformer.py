@@ -16,10 +16,13 @@ class OneHotTransformer(TransformerMixin):
 
     def transform(self, df):
         try:
-            result = df.copy()
+            result = pd.DataFrame()
+            dfc = df.copy()
             for feature_name in self.columns_to_encode:
-                result[feature_name] = self.le.fit_transform(result[feature_name])
-            result = self.onehotencoder.fit_transform(result).toarray()
+                result[feature_name] = self.le.fit_transform(dfc[feature_name])
+            print(result)
+            print(self.onehotencoder.fit_transform(result).toarray())
+            result = pd.DataFrame(self.onehotencoder.fit_transform(result).toarray())
             return result
 
         except KeyError:
