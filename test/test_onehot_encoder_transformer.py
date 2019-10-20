@@ -24,12 +24,12 @@ class TestOneHotTransformer(unittest.TestCase):
         germany = np.array([0, 0, 0, 1, 0, 0, 0, 1, 0])
         italy = np.array([0, 0, 0, 0, 1, 0, 1, 0, 0])
         self.filled_df = pd.DataFrame({
-            "Male": male,
-            "Female": female,
+            "female": female,
+            "male": male,
             "France": france,
-            "Spain": spain,
             "Germany": germany,
-            "Italy": italy
+            "Italy": italy,
+            "Spain": spain
         })
 
     def test_transform(self):

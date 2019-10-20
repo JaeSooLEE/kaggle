@@ -19,10 +19,10 @@ class OneHotTransformer(TransformerMixin):
             result = pd.DataFrame()
             dfc = df.copy()
             for feature_name in self.columns_to_encode:
-                result[feature_name] = self.le.fit_transform(dfc[feature_name])
+                result = pd.concat([result, pd.get_dummies(dfc[feature_name])], axis=1)
             print(result)
-            print(self.onehotencoder.fit_transform(result).toarray())
-            result = pd.DataFrame(self.onehotencoder.fit_transform(result).toarray())
+            #result = pd.DataFrame(self.onehotencoder.fit_transform(result).toarray()).astype('int')
+            result = result.astype('int64')
             return result
 
         except KeyError:
