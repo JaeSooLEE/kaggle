@@ -1,5 +1,5 @@
 import unittest
-from preprocessing.transformers.onehot_encoder_transformer import OneHotTransformer
+from preprocessing.transformers.onehot_encoder_transformer import SimpleOneHotEncoder
 import pandas as pd
 import numpy as np
 import collections
@@ -16,21 +16,22 @@ class TestOneHotTransformer(unittest.TestCase):
             "column_c3": column_c3
         })
         self.columns_to_onehot = ["sex", "country"]
-        self.onehotTransformer = OneHotTransformer(self.columns_to_onehot)
+        self.onehotTransformer = SimpleOneHotEncoder(self.columns_to_onehot)
 
-        male = np.array([1, 0, 0, 1, 1, 1, 0, 0, 1])
-        female = np.array([0, 1, 1, 0, 0, 0, 1, 1, 0])
-        france = np.array([1, 0, 0, 0, 0, 1, 0, 0, 0])
-        spain = np.array([0, 1, 1, 0, 0, 0, 0, 0, 1])
-        germany = np.array([0, 0, 0, 1, 0, 0, 0, 1, 0])
-        italy = np.array([0, 0, 0, 0, 1, 0, 1, 0, 0])
+        male = np.array([1., 0., 0., 1., 1., 1., 0., 0., 1.])
+        female = np.array([0., 1., 1., 0., 0., 0, 1., 1., 0.])
+        france = np.array([1., 0., 0., 0., 0., 1, 0., 0., 0.])
+        spain = np.array([0., 1., 1., 0., 0., 0, 0., 0., 1.])
+        germany = np.array([0., 0., 0., 1., 0., 0., 0., 1., 0.])
+        italy = np.array([0., 0., 0., 0., 1., 0., 1, 0., 0.])
         self.filled_df = pd.DataFrame(collections.OrderedDict([
-            ("sex_female", female),
-            ("sex_male", male),
-            ("country_France", france),
-            ("country_Germany", germany),
-            ("country_Italy", italy),
-            ("country_Spain", spain)
+            ("column_c3", column_c3),
+            ("country__France", france),
+            ("country__Germany", germany),
+            ("country__Italy", italy),
+            ("country__Spain", spain),
+            ("sex__female", female),
+            ("sex__male", male)
         ]))
 
     def test_transform(self):

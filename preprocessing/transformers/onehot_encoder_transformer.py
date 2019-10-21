@@ -1,36 +1,41 @@
 import pandas as pd
-import numpy as np
 from sklearn.base import TransformerMixin
-from sklearn.preprocessing import OneHotEncoder
-from sklearn import preprocessing
+from sklearn.feature_extraction import DictVectorizer
+import numpy as np
 
 
-class OneHotTransformer(TransformerMixin):
-    def __init__(self, columns_to_encode):
-        self.columns_to_encode = columns_to_encode
-        self.encoder = OneHotEncoder(handle_unknown='ignore',sparse=False)
-        self.le = preprocessing.LabelEncoder()
-        self.df_2 = {}
+class SimpleOneHotEncoder(TransformerMixin):
+    def __init__(self, cols):
+        """
+        Transformer which executes one-hot encoding of given variables, without removing the other (not to be encoded)
+        variables.
+        :param cols: columns to one-hot encode
+        """
+        self.columns_to_encode = cols
+        self.encoder = DictVectorizer(dtype=np.float64, separator='__')
 
-    def fit(self, df=None, y=None):
-        self.df_2 = df.apply(self.le.fit_transform)
-        self.encoder.fit(self.df_2)
-        print(self.df_2)
+    @staticmethod
+    def _convert_columns_tostring(df):
+        df = df.astype(str)
+        return df
+
+    def _split_columns(self, df):
+        df_not_to_encode = df.drop(self.columns_to_encode, axis=1)
+        df_to_encode = self._convert_columns_tostring(df[self.columns_to_encode])
+        df_not_to_encode = df_not_to_encode.astype(np.float64)
+        dict = df_to_encode.to_dict('records')
+        return dict, df_not_to_encode
+
+    def fit(self, df):
+        dict_to_encode, df_not_to_encode = self._split_columns(df)
+        self.encoder.fit(dict_to_encode)
         return self
 
     def transform(self, df):
-        try:
-            result = pd.DataFrame()
-            dfc = df.copy()
-            for feature_name in self.columns_to_encode:
-                #result = pd.concat([result, self.encoder.transform(dfc[feature_name])], axis=1)
-                result = pd.concat([result, self.df_2[feature_name]], axis=1)
-            print(result)
-            result = self.encoder.fit_transform(result)
-            result = result.astype('int64')
-            print(result)
-            return result
-
-        except KeyError:
-            cols_error = list(set(self.columns) - set(df.columns))
-            raise KeyError("The DataFrame does not include the columns: %s" % cols_error)
+        dict_to_encode, df_not_to_encode = self._split_columns(df)
+        smat = self.encoder.transform(dict_to_encode)
+        df_encoded = pd.DataFrame(smat.toarray(), columns=self.encoder.get_feature_names())
+        df_encoded.index = df_not_to_encode.index
+        df_tot = df_not_to_encode.merge(df_encoded, left_index=True, right_index=True, copy=False)
+        df_tot.sort_index(axis=1, inplace=True)
+        return df_tot
