@@ -26,7 +26,7 @@ class SimpleOneHotEncoder(TransformerMixin):
         dict = df_to_encode.to_dict('records')
         return dict, df_not_to_encode
 
-    def fit(self, df):
+    def fit(self, df=None, y=None):
         dict_to_encode, df_not_to_encode = self._split_columns(df)
         self.encoder.fit(dict_to_encode)
         return self
