@@ -10,11 +10,11 @@ class TestOneHotTransformer(unittest.TestCase):
         column_c2 = np.array(["France", "Spain", "Spain", "Germany", "Italy", "France", "Italy", "Germany", "Spain"])
         column_c3 = np.array([0, 1, 0, 0, 0, 0, 1, 0, np.nan])
         self.df = pd.DataFrame({
-            "column_c1": column_c1,
-            "column_c2": column_c2,
+            "sex": column_c1,
+            "country": column_c2,
             "column_c3": column_c3
         })
-        self.columns_to_onehot = ["column_c1", "column_c2"]
+        self.columns_to_onehot = ["sex", "country"]
         self.onehotTransformer = OneHotTransformer(self.columns_to_onehot)
 
         male = np.array([1, 0, 0, 1, 1, 1, 0, 0, 1])
@@ -24,12 +24,12 @@ class TestOneHotTransformer(unittest.TestCase):
         germany = np.array([0, 0, 0, 1, 0, 0, 0, 1, 0])
         italy = np.array([0, 0, 0, 0, 1, 0, 1, 0, 0])
         self.filled_df = pd.DataFrame({
-            "female": female,
-            "male": male,
-            "France": france,
-            "Germany": germany,
-            "Italy": italy,
-            "Spain": spain
+            "sex_female": female,
+            "sex_male": male,
+            "country_France": france,
+            "country_Germany": germany,
+            "country_Italy": italy,
+            "country_Spain": spain
         })
 
     def test_transform(self):
