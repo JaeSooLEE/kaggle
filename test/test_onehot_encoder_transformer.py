@@ -2,6 +2,7 @@ import unittest
 from preprocessing.transformers.onehot_encoder_transformer import OneHotTransformer
 import pandas as pd
 import numpy as np
+import collections
 
 
 class TestOneHotTransformer(unittest.TestCase):
@@ -23,14 +24,14 @@ class TestOneHotTransformer(unittest.TestCase):
         spain = np.array([0, 1, 1, 0, 0, 0, 0, 0, 1])
         germany = np.array([0, 0, 0, 1, 0, 0, 0, 1, 0])
         italy = np.array([0, 0, 0, 0, 1, 0, 1, 0, 0])
-        self.filled_df = pd.DataFrame({
-            "sex_female": female,
-            "sex_male": male,
-            "country_France": france,
-            "country_Germany": germany,
-            "country_Italy": italy,
-            "country_Spain": spain
-        })
+        self.filled_df = pd.DataFrame(collections.OrderedDict([
+            ("sex_female", female),
+            ("sex_male", male),
+            ("country_France", france),
+            ("country_Germany", germany),
+            ("country_Italy", italy),
+            ("country_Spain", spain)
+        ]))
 
     def test_transform(self):
         self.onehotTransformer.fit(self.df)
